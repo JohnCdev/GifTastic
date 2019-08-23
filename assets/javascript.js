@@ -1,4 +1,6 @@
-var topics = ["cat", "dog", "rat", "hamster", "giraffe"];
+var topics = ["cat", "dog", "rat", "hamster"];
+
+var favList = [];
 
 $("#button-container").on("click", ".gif-button", function () {
     $("#gif-container").empty();
@@ -15,7 +17,7 @@ $("#button-container").on("click", ".gif-button", function () {
             var results = res.data;
             for (var i = 0; i < results.length; i++) {
                 var gifDiv = $("<div>")
-                    .addClass("gif-div mr-2 mt-2");
+                    .addClass("gif-div mr-2 mt-2 rounded");
                 var img = $("<img>")
                     .addClass("gif")
                     .attr("src", results[i].images.fixed_height_still.url)
@@ -23,9 +25,13 @@ $("#button-container").on("click", ".gif-button", function () {
                     .attr("data-gif", results[i].images.fixed_height.url)
                     .attr("data-state", "still")
                     .attr("alt", term + " img");
-                var rating = $("<p>")
+                var rating = $("<span>")
                     .text("Rating: " + results[i].rating);
+                var fav = $("<button>")
+                    .addClass("fav-button")
+                    .text("Favorite!");
                 gifDiv.append(rating);
+                gifDiv.append(fav);
                 gifDiv.append(img);
                 $("#gif-container").append(gifDiv);
             }
@@ -33,6 +39,31 @@ $("#button-container").on("click", ".gif-button", function () {
 });
 
 $("#gif-container").on("click", ".gif", function () {
+    var state = $(this).attr("data-state");
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-gif"));
+        $(this).attr("data-state", "gif");
+    } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+    }
+});
+
+$("#gif-container").on("click", ".fav-button", function () {
+    event.preventDefault();
+
+    var fav = $(this).next();
+    favList.push(fav);
+
+    favList.forEach(i => {
+        $("#fav-gifs").append(i);
+    });
+    console.log(favList);
+    //losses data when stringified for some reason
+    localStorage.setItem("favList", JSON.stringify(favList));
+});
+
+$("#fav-gifs").on("click", ".gif", function () {
     var state = $(this).attr("data-state");
     if (state === "still") {
         $(this).attr("src", $(this).attr("data-gif"));
@@ -65,5 +96,10 @@ window.onload = function () {
             .addClass("gif-button rounded")
             .text(i);
         $("#button-container").append(btn);
-    })
+    });
+    favList = JSON.parse(localStorage.getItem("favList")) || [];
+    favList.forEach(i => {
+        console.log(i);
+        $("#fav-gifs").append(i);
+    });
 };

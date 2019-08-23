@@ -8,6 +8,21 @@ button {
 }
 
 .gif-div {
+    border: 2px solid gray;
     clear: both;
     display: inline-block;
+    padding: 5px;
+}
+
+#fav-gifs {
+    margin-top: 10px;
+}
+
+.fav-button {
+    float: right;
+}
+
+.gif {
+    display: block;
+    padding-top: 5px;
 }
