@@ -51,21 +51,31 @@ $("#gif-container").on("click", ".gif", function () {
 
 $("#gif-container").on("click", ".fav-button", function () {
     event.preventDefault();
+    var match = false;
+    favList.forEach(i => {
+        if ($(this).next().attr("data-gif") == i.gif) {
+            alert("You have already added this gif to your favorites");
+            match = true;
+        }
+    });
 
-    var fav = {
-        gif: $(this).next().attr("data-gif"),
-        still: $(this).next().attr("data-still")
-    };
-    favList.push(fav);
+    if (favList.length === 0 || !match) {
+        var fav = {
+            gif: $(this).next().attr("data-gif"),
+            still: $(this).next().attr("data-still")
+        };
+        favList.push(fav);
 
-    var img = $("<img>")
-        .addClass("gif")
-        .attr("src", $(this).next().attr("data-still"))
-        .attr("data-still", $(this).next().attr("data-still"))
-        .attr("data-gif", $(this).next().attr("data-gif"))
-        .attr("data-state", "still");
-    $("#fav-gifs").prepend(img);
-    localStorage.setItem("favList", JSON.stringify(favList));
+        var img = $("<img>")
+            .addClass("gif")
+            .attr("src", $(this).next().attr("data-still"))
+            .attr("data-still", $(this).next().attr("data-still"))
+            .attr("data-gif", $(this).next().attr("data-gif"))
+            .attr("data-state", "still");
+        $("#fav-gifs").prepend(img);
+        localStorage.setItem("favList", JSON.stringify(favList));
+    }
+
 });
 
 $("#fav-gifs").on("click", ".gif", function () {
@@ -106,7 +116,6 @@ window.onload = function () {
     });
     favList = JSON.parse(localStorage.getItem("favList")) || [];
     favList.forEach(i => {
-        console.log(i);
         var img = $("<img>")
             .addClass("gif")
             .attr("src", i.still)
