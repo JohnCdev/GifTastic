@@ -1,4 +1,4 @@
-var topics = ["cat", "dog", "rat", "hamster"];
+var topics = ["cat", "dog", "rat", "skunk", "possum", "hamster"];
 
 var favList = [];
 
@@ -52,14 +52,19 @@ $("#gif-container").on("click", ".gif", function () {
 $("#gif-container").on("click", ".fav-button", function () {
     event.preventDefault();
 
-    var fav = $(this).next();
+    var fav = {
+        gif: $(this).next().attr("data-gif"),
+        still: $(this).next().attr("data-still")
+    };
     favList.push(fav);
 
-    favList.forEach(i => {
-        $("#fav-gifs").append(i);
-    });
-    console.log(favList);
-    //losses data when stringified for some reason
+    var img = $("<img>")
+        .addClass("gif")
+        .attr("src", $(this).next().attr("data-still"))
+        .attr("data-still", $(this).next().attr("data-still"))
+        .attr("data-gif", $(this).next().attr("data-gif"))
+        .attr("data-state", "still");
+    $("#fav-gifs").prepend(img);
     localStorage.setItem("favList", JSON.stringify(favList));
 });
 
@@ -78,8 +83,10 @@ $("#button-submit").on("click", function () {
     if ($("#button-input").val().trim() === "") {
         return false;
     } else {
+
         topics.push($("#button-input").val().trim());
         $("#button-container").empty();
+
         topics.forEach(i => {
             var btn = $("<button>")
                 .addClass("gif-button rounded")
@@ -100,6 +107,12 @@ window.onload = function () {
     favList = JSON.parse(localStorage.getItem("favList")) || [];
     favList.forEach(i => {
         console.log(i);
-        $("#fav-gifs").append(i);
+        var img = $("<img>")
+            .addClass("gif")
+            .attr("src", i.still)
+            .attr("data-still", i.still)
+            .attr("data-gif", i.gif)
+            .attr("data-state", "still");
+        $("#fav-gifs").prepend(img);
     });
 };
